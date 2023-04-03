@@ -6,12 +6,16 @@
  * @n: index
  * return: the memory area *s
  */
+
 char *_memset(char *s, char b, unsigned int n)
 {
-unsigned int i;
-for (i = 0; i < n; i++)
-{
-s[i] = b;
-}
-return (s);
+
+	int i = 0;
+
+	for (; n > 0; i++)
+	{
+		s[i] = b;
+		n--;
+	}
+	return (s);
 }
