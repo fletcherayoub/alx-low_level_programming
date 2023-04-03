@@ -4,9 +4,10 @@
  * @s: adress of memory filled
  * @b: value
  * @n: index
- * return: thr memory area s
+ * return: the memory area *s
  */
-char *_memset(char *s, char b,unsigned int n)
+
+char *_memset(char *s, char b, unsigned int n)
 {
 	unsigned int i;
 
