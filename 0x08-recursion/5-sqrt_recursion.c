@@ -22,7 +22,7 @@ int firstfunction(int num, int psqrt)
 }
 /**
  * _sqrt_recursion - returns the natural square root of a number.
- * @n: number to calculate the square 
+ * @n: number to calculate the square
  *
  * Return: squareroot of n
  * -1 if n does not have a natural sqrt
