@@ -1,14 +1,14 @@
 #include "main.h"
 /**
  * _lenght - checks the lenght of a string
- * @st: is the string
+ * @s: is the string
  * Return: return the leng of the string
  */
-int _lenght(char *st)
+int _lenght(char *s)
 {
-	if (*st == '\0')
+	if (*s == '\0')
 		return (0);
-	return (1 + _lenght(st + 1));
+	return (1 + _lenght(s + 1));
 }
 
 /**
@@ -24,7 +24,7 @@ int check_f(int i, int l, char *s)
 	{
 		if (s[i] == s[l])
 		{
-			return (checkp(i + 1, l - 1, s));
+			return (check_f(i + 1, l - 1, s));
 		}
 		else if (s[i] != s[l])
 		{
@@ -45,5 +45,5 @@ int check_f(int i, int l, char *s)
  */
 int is_palindrome(char *s)
 {
-	return (checkp(0, _lenght(s) - 1, s));
+	return (check_f(0, _lenght(s) - 1, s));
 }
