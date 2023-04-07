@@ -57,8 +57,7 @@ int main(int argc, char *argv[])
 		printf("error\n");
 		return (1);
 	}
-
-	n = atoi(argv[n]);
+	n = atoi(argv[1]);
 
 	if (n < 0)
 		printf("0\n");
