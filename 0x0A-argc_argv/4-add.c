@@ -17,27 +17,9 @@ int main(int argc, char *argv[])
 	int n, m, len, sum;
 	char *ptr;
 
-	if (argc < 2)
+	if (arg < 2)
 		printf("0\n");
 	else
 	{
 		sum = 0;
-		for (n = 1; n < argc; n++)
-		{
-			ptr = argv[n];
-			len = strlen(ptr);
-
-			for (m = 0; m < len; m++)
-			{
-				if (isdigit(*(ptr + m)) == 0)
-				{
-					printf("error\n");
-					return (1);
-				}
-			}
-			sum += atoi(argv[n]);
-		}
-	printf("%d\n", sum);
-	}
-	return (0);
-}
+		for (n = 1; n < argc; n++
