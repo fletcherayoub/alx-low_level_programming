@@ -5,39 +5,56 @@
 #include "main.h"
 
 /**
- * main - program that adds and returns the sum
- * @argc: number of command
- * @argv: array
+ * check - there are digit
+ * @argv: array str
  *
- * Return: 1 if not integer , 0 otherwis
+ * Return: always 0 (success)
+ */
+int check(char *str)
+
+{
+	unsigned int count;
+
+	count = 0;
+	while (count < strlen(str))
+	{
+		if (!isdigit(str[count]))
+		{
+			return (0);
+		}
+		count++;
+	}
+	return (1);
+}
+
+/**
+ * main - print name
+ * @argc: count
+ * @argv: arguments
+ *
+ * Return: always 0 (success)
  */
 
 int main(int argc, char *argv[])
 {
-	int n, m, length, sum;
-	char *ptr;
+	int count, str_to_int, sum = 0;
 
-	if (argc < 2)
-		printf("0\n");
-	else
+	count = 1;
+	while (count < argc)
 	{
-		sum = 0;
-		for (n = 1; n < argc; n++)
-		{
-			ptr = argv[n];
-			length = strlen(ptr);
+		if (check(argv[count]))
 
-			for (m = 0; m < length; m++)
-			{
-				if (isdigit(*(ptr + m)) == 0)
-				{
-					printf("error\n");
-					return (1);
-				}
-			}
-			sum += check(argv[n]);
+		{
+			str_to_int = atoi(argv[count]);
+			sum += str_to_int;
 		}
-	printf("%d\n", sum);
+		else
+		{
+			printf("error\n");
+			return (1);
+		}
+		count++;
 	}
+	printf("%d\n", sum);
 	return (0);
 }
