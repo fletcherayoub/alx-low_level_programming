@@ -2,15 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "main.h"
 
 /**
- * check - there are digit
- * @argv: array str
+ * check_num -check - there are digit
+ * @str: array str
  *
  * Return: always 0 (success)
  */
-int check(char *str)
+int check_num(char *str)
 
 {
 	unsigned int count;
@@ -37,13 +36,14 @@ int check(char *str)
 
 int main(int argc, char *argv[])
 {
-	int count, str_to_int, sum = 0;
+	int count;
+	int str_to_int;
+	int sum = 0;
 
 	count = 1;
 	while (count < argc)
 	{
-		if (check(argv[count]))
-
+		if (check_num(argv[count]))
 		{
 			str_to_int = atoi(argv[count]);
 			sum += str_to_int;
