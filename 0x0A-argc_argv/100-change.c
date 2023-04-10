@@ -3,14 +3,14 @@
 #include <stdlib.h>
 
 /**
- * converter - change coins for an amount money
+ * main - change coins for an amount money
  * @argc: number of arg
  * @argv: array with arg
  *
  * Return: 0
  */
 
-int converter(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int n = 0, m = 0;
 	char c[] = "Error";
