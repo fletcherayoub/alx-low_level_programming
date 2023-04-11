@@ -5,9 +5,10 @@
 /**
  * _strdup - function that returns a pointer to new space in memory,
  * which contains a copy of the string given parameter
- * @str: char
  *
- * return: pointer
+ * @str: array
+ *
+ * Return: pointer
  */
 
 char *_strdup(char *str)
