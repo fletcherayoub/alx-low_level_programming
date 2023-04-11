@@ -3,11 +3,13 @@
 #include <stdlib.h>
 
 /**
- * _strdup - function that returns a pointer to new space in memory
- * @str: array
+ * _strdup - function that returns a pointer to new space in memory,
+ * which contains a copy of the string given parameter
+ * @str: char
  *
- * return: 0
+ * return: pointer
  */
+
 char *_strdup(char *str)
 {
 	int n, m;
@@ -34,4 +36,3 @@ for (m = 0; m < n; m++)
 }
 return (string);
 }
-
