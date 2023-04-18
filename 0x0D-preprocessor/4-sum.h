@@ -1,5 +1,5 @@
-#ifndef _SUM
-#define _SUM
+#ifndef _SUM_
+#define _SUM_
 
 /**
  * sum : 4-sum.h
