@@ -1,14 +1,12 @@
 #include "variadic_functions.h"
 #include <stdio.h>
 #include <stdarg.h>
-
 /**
  * print_all - prints anything
  * @format: argument types paased to function
  *
  * Return: void
  */
-
 void print_all(const char * const format, ...)
 {
 	va_list args;
@@ -38,7 +36,6 @@ void print_all(const char * const format, ...)
 				s = va_arg(args, char*);
 				if (s == NULL)
 					s = "(nil)";
-
 				printf("%s", s);
 				m = 0;
 				break;
