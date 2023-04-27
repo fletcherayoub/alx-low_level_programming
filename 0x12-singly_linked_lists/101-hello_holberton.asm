@@ -1,5 +1,6 @@
 section .data
-msg db "hello, holberton\n",10
+msg: db "hello, Holberton",10
+
 section .text
 global main
 main:
