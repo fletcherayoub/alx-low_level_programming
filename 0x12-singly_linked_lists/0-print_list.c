@@ -9,18 +9,16 @@
 
 size_t print_list(const list_t *h)
 {
-	const list_t *temp = h;
-	int index = 0;
-
-	while (temp != NULL)
+	size_t index;
+	index = 0;
+	while (h != NULL)
 	{
-		printf("[%d] ", temp->len);
-		if (temp->str == NULL)
-			printf("(nil)");
+		if (h->str == NULL)
+			printf("[%d] %s\n", 0, "(nil)");
 		else
-			printf("%s", temp->str);
-		printf("\n");
-		temp = temp->next;
+			printf("[%d] %s\n", h->len, h->str);
+		h = h->next;
 		index++;
 	}
+	return (index);
 }
