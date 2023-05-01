@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct liatint_s
+typedef struct listint_s
 {
 	int n;
 	struct listint_s *next;
