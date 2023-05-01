@@ -4,7 +4,7 @@
 #include <string.h>
 
 /**
- * insert_modeint_at_index - inserts a new node at given position
+ * insert_nodeint_at_index - inserts a new node at given position
  * @head: head of list
  * @idx: node in the list
  * @n: integer
