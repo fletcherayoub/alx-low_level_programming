@@ -4,10 +4,10 @@
 #include <string.h>
 
 /**
- * find_listing_loop - free a listint_t list
- * @head: the head
+ * free_listint_safe - free a listint_t list
+ * @h: pointer for node
  *
- * Return: the staring node
+ * Return: free list
  */
 size_t free_listint_safe(listint_t **h)
 {
@@ -23,11 +23,13 @@ size_t free_listint_safe(listint_t **h)
 		if (ln > 0)
 		{
 			no = (*h)->next;
+			free(*h);
 			*h = no;
 			t++;
 		}
 		else
 		{
+			free(*h);
 			*h = NULL;
 			t++;
 			break;
