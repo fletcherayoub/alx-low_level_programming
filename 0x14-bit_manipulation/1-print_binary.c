@@ -1,10 +1,8 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
- * print_binary - printd the binary representation of number
- * @nthe number for print
+ * print_binary - prints the binary representation of a number
+ * @n:the number for print
  *
  * Return: value
  */
