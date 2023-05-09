@@ -37,19 +37,21 @@ int main(int argc, char *argv[])
 		}
 		if (read_l == -1)
 		{
-			dprintf(STDERR_FILENO, "Error: can't read from file %s\n", argv[1]);
+			dprintf(STDERR_FILENO, "Error: can't read from file %s\n"
+					, argv[1]);
 			exit(98);
 		}
 		write_l = write(f_to, buffer, read_l);
 		if (write_l != read_l || write_l == -1)
 		{
-			dprintf(STDERR_FILENO, "Error: can't write to %s\n", argv[2]);
+			dprintf(STDERR_FILENO, "Error: can't write to %s\n"
+					, argv[2]);
 			exit(99);
 		}
 	}
 	if (close(f_from) == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", f_from);
+		dprintf(STDERR_FILENO,"Error: can't close fd %d\n", f_from);
 		exit(100);
 	}
 	if (close(f_to) == -1)
