@@ -15,6 +15,7 @@ int len_data(char *);
 void len_version(char *);
 void len_osabi(char *);
 void len_abivers(char *);
+void len_type(char *, int);
 
  /**
   * main - check code
@@ -70,14 +71,15 @@ void len_magic(char *buffer)
 int n;
 
 if ((buffer[0] != 127) || (buffer[1] != 'E')
-|| (buffer[2] != 'L' || (buffer[3] != 'F'))
+|| (buffer[2] != 'L' || (buffer[3] != 'F')))
+{
 write(STDERR_FILENO, "Error: not ELF file\n", 20);
 exit(98);
 }
 printf("ELF Header:\n len_magic: ");
-for (i = 0; i < 16; i++)
+for (n = 0; n < 16; n++)
 {
-printf(" %.2x", buffer[n];
+printf(" %.2x", buffer[n]);
 }
 printf("\n");
 }
@@ -143,7 +145,7 @@ int len_data(char *buffer)
 void len_version(char *buffer)
 {
 	printf(" %-35s%u", "version:", buffer[EI_VERSION]);
-	if (buf[EI_VERSION] == EV_CURRENT && 1)
+	if (buffer[EI_VERSION] == EV_CURRENT && 1)
 		printf(" (current)\n");
 	else
 		printf("\n");
@@ -161,7 +163,7 @@ void len_osabi(char *buffer)
 		"UNIX - AIX", "UNIX - IRIX", "UNIX - FreeBSD", "UNIX - TRU64",
 		"Novell - Modesto", "UNIX - OpenBSD", "VMS - OpenVMS",
 		"HP - Non-Stop Kernel", "AROS", "FenixOS",
-		"Nuxi CloudABI", "Stratus Technologies OpenVOS"}
+		"Nuxi CloudABI", "Stratus Technologies OpenVOS"};
 	printf(" %-35s", "OS/ABI:");
 	if (buffer[EI_OSABI] < 19)
 		printf("%s\n", table[(unsigned int) buffer[EI_OSABI]]);
@@ -220,7 +222,6 @@ void len_entry(char *buffer, int m, int e)
 			--lk;
 		}
 		printf("%x", *buffer & 0xff);
-
 		while (--lk > 0)
 			printf("%02x", *(++buffer) & 0xff);
 	}
@@ -235,5 +236,3 @@ void len_entry(char *buffer, int m, int e)
 	}
 	printf("\n");
 }
-
-
