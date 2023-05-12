@@ -1,129 +1,92 @@
 #include <elf.h>
 #include <stdio.h>
+#include "main.h"
 #include <stdlib.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
 #include <unistd.h>
-#include <stdlib.h>
 
-void len_magic(char *);
-int len_class(char *);
-void len_entry(char *, int, int);
-int len_data(char *);
-void len_version(char *);
-void len_osabi(char *);
-void len_abivers(char *);
-void len_type(char *, int);
-
- /**
-  * main - check code
-  * @ac: arguments count
-  * @av: arguments vactor
-  * Return: 0 success otherwise failed
-  */
-int main(int ac, char **av)
+/**
+ * _strncmp - compare two strings
+ * @s1: first string
+ * @s2: second string
+ * @n: max number of bytes
+ * Return: 0 if n s1 and s2 equal, otherwase non
+ */
+int _strncmp(const char *s1, const char *s2, size_t n)
 {
-	int fl, nl, l_class, l_da;
-	char buffer[18];
-
-	if (ac != 2)
+	for ( ; n && *s1 && *s2; --n, ++s1, ++s2)
 	{
-		write(STDERR_FILENO, "Usage: elf_header elf_filename\n", 31);
-		exit(98);
+		if (*s1 != *s2)
+			return (*s1 - *s2);
 	}
-	fl = open(av[1], O_RDONLY);
-	if (fl == -1)
+	if (n)
 	{
-		write(STDERR_FILENO, "Error: can't open  from file\n", 28);
-		exit(98);
-	}
-	nl = read(fl, buffer, 18);
-	if (nl == -1)
-	{
-		write(STDERR_FILENO, "Error: can't read from file\n", 28);
-		exit(98);
-	}
-	len_magic(buffer);
-	l_class = len_class(buffer);
-	l_da = len_data(buffer);
-	len_version(buffer);
-	len_osabi(buffer);
-	len_abivers(buffer);
-	len_type(buffer, l_da);
-	lseek(fl, 24, SEEK_SET);
-	read(fl, (char *) buffer, l_class / 8);
-	len_entry(buffer, l_class, l_da);
-	if (close(fl) == -1)
-	{
-		write(STDERR_FILENO, "Error: cannot close\n", 20);
-		exit(98);
+		if (*s1)
+			return (1);
+		if (*s2)
+			return (-1);
 	}
 	return (0);
 }
+
 /**
  * len_magic - print
  * @buffer: buffer
  */
-void len_magic(char *buffer)
+void len_magic(const unsigned char *buffer)
 {
-int n;
+	unsigned int n;
 
-if ((buffer[0] != 127) || (buffer[1] != 'E')
-|| (buffer[2] != 'L' || (buffer[3] != 'F')))
-{
-write(STDERR_FILENO, "Error: not ELF file\n", 20);
-exit(98);
-}
-printf("ELF Header:\n len_magic: ");
-for (n = 0; n < 16; n++)
-{
-printf(" %.2x", buffer[n]);
-}
-printf("\n");
+	if (_strncmp((const char *) buffer, ELFMAG, 4))
+	{
+		write(STDERR_FILENO, "Error: Not ELF file\n", 23);
+		exit(98);
+	}
+	printf("ELF Header:\n magic: ");
+	for (n = 0; n < 16; n++)
+		printf("%02x%c", buffer[n], n < 15 ? ' ' : '\n');
 }
 
 /**
  * len_class - print len_magic
  * @buffer : header ELF
- * Retrurn: 64 or 32
+ *
+ * Return: 64 or 32
  */
-int len_class(char *buffer)
+size_t len_class(const unsigned char *buffer)
 {
-printf("%-35s", "len_Class:");
-
-if (buffer[EI_CLASS] == ELFCLASS64)
-{
-printf("ELF64\n");
-return (64);
-}
-if (buffer[EI_CLASS] == ELFCLASS32)
-{
-	printf("ELF32\n");
+	printf("  %-34s ", "Class:");
+	if (buffer[EI_CLASS] == ELFCLASS64)
+	{
+		printf("ELF64\n");
+		return (64);
+	}
+	if (buffer[EI_CLASS] == ELFCLASS32)
+	{
+		printf("ELF32\n");
+		return (32);
+	}
+	printf("<unknown: %x>\n", buffer[EI_CLASS]);
 	return (32);
 }
-printf("<unknown: %x>\n", buffer[EI_CLASS]);
-return (32);
-}
+
 /**
  * len_abivers - print
  * @buffer: ELF
  */
-void len_abivers(char *buffer)
+void len_abivers(const unsigned char *buffer)
 {
-	printf(" %-35s%u\n", "ABI version:", buffer[EI_ABIVERSION]);
+	printf("  %-34s %u\n", "ABI version:", buffer[EI_ABIVERSION]);
 }
+
 /**
  * len_data - print
  * @buffer: ELF buffer
  *
  * Return: 1 if big endian, otherwase 0
  */
-int len_data(char *buffer)
+int len_data(const unsigned char *buffer)
 {
-	printf(" %-35s", "len_Data:");
-
+	printf("  %-34s ", "Data:");
 	if (buffer[EI_DATA] == ELFDATA2MSB)
 	{
 		printf("2's complement, big endian\n");
@@ -134,7 +97,7 @@ int len_data(char *buffer)
 		printf("2's complement, little endian\n");
 		return (0);
 	}
-	printf("Invalid data encording\n");
+	printf("Invalid data encoding\n");
 	return (0);
 }
 
@@ -142,10 +105,11 @@ int len_data(char *buffer)
  * len_version - print ELF version
  * @buffer: buffer ELF
  */
-void len_version(char *buffer)
+void len_version(const unsigned char *buffer)
 {
-	printf(" %-35s%u", "version:", buffer[EI_VERSION]);
-	if (buffer[EI_VERSION] == EV_CURRENT && 1)
+	printf("  %-34s %u", "version:", buffer[EI_VERSION]);
+
+	if (buffer[EI_VERSION] == EV_CURRENT)
 		printf(" (current)\n");
 	else
 		printf("\n");
@@ -155,84 +119,156 @@ void len_version(char *buffer)
  * len_osabi - print ELF OS/ABI
  * @buffer: ELF buffer
  */
-void len_osabi(char *buffer)
+void len_osabi(const unsigned char *buffer)
 {
-	char *table[19] = {
+	const char *osabi_table[19] = {
 		"UNIX - System V", "UNIX - HP-UX", "UNIX - NetBSD",
 		"UNIX - GNU", "<unknown: 4>", "<unknown: 5>", "UNIX - Solaris",
 		"UNIX - AIX", "UNIX - IRIX", "UNIX - FreeBSD", "UNIX - TRU64",
 		"Novell - Modesto", "UNIX - OpenBSD", "VMS - OpenVMS",
 		"HP - Non-Stop Kernel", "AROS", "FenixOS",
-		"Nuxi CloudABI", "Stratus Technologies OpenVOS"};
-	printf(" %-35s", "OS/ABI:");
+		"Nuxi CloudABI", "Stratus Technologies OpenVOS"
+	};
+
+	printf(" %-34s", "OS/ABI:");
+
 	if (buffer[EI_OSABI] < 19)
-		printf("%s\n", table[(unsigned int) buffer[EI_OSABI]]);
+		printf("%s\n", osabi_table[(unsigned int) buffer[EI_OSABI]]);
 	else
 		printf("<unknown: %x>\n", buffer[EI_OSABI]);
 }
+
 /**
  * len_type - print len_type
  * @buffer: ELF buffer
  * @endian: endianness
  */
-void len_type(char *buffer, int endian)
+void len_type(const unsigned char *buffer, int endian)
 {
-	int len_type;
-
-	char *table[5] = {
+	char *type_table[5] = {
 		"NONE (No file type)",
 		"REL (Relocatable file)",
 		"EXEC (Executable file)",
 		"DYN (Shared object file)",
 		"CORE (Core file)"
 	};
+	unsigned int type;
 
-	printf(" %-35s", "len_type:");
+	printf("  %-34s ", "type:");
 
 	if (endian)
-		len_type = 256 * buffer[16] + buffer[17];
+		type = 0x100 * buffer[16] + buffer[17];
 	else
-		len_type = 256 * buffer[17] + buffer[17];
+		type = 0x100 * buffer[17] + buffer[16];
 
-	if (len_type < 5)
-		printf("%s\n", table[len_type]);
-	else if (len_type >= ET_LOPROC && len_type <= ET_HIPROC)
-		printf("Processor Specific: (%4x)\n", len_type);
-	else if (len_type >= ET_LOOS && len_type <= ET_HIOS)
-		printf("OS Specific: (%4x)\n", len_type);
+	if (type < 5)
+		printf("%s\n", type_table[type]);
+	else if (type >= ET_LOPROC && type <= ET_HIPROC)
+		printf("Processor Specific: (%4x)\n", type);
+	else if (type >= ET_LOOS && type <= ET_HIOS)
+		printf("OS Specific: (%4x)\n", type);
 	else
-		printf("<unknown: %x>\n", len_type);
+		printf("<unknown: %x>\n", type);
 }
+
 /**
  * len_entry - entry point address
  * @buffer: string contraining the entry point address
- * @m: (32, 64)
- * @e: endianness
+ * @l_mode: (32, 64)
+ * @endian: endianness
  */
-void len_entry(char *buffer, int m, int e)
+void len_entry(const unsigned char *buffer, size_t l_mode, int endian)
 {
-	int lk = m / 8;
+	int a_size = l_mode / 8;
 
-	printf(" %-35s0x", "Entry point address:");
-	if (e)
+	printf("  %-34s 0x", "Entry point address:");
+	if (endian)
 	{
-		while (lk && !*(buffer))
-		{
-			++buffer;
-			--lk;
-		}
+		while (a_size && !*(buffer))
+			--a_size, ++buffer;
+
 		printf("%x", *buffer & 0xff);
-		while (--lk > 0)
+
+		while (--a_size > 0)
 			printf("%02x", *(++buffer) & 0xff);
 	}
 	else
 	{
-		buffer += lk;
-		while (lk && !*(--buffer))
-			--lk;
+		buffer += a_size;
+		while (a_size && !*(--buffer))
+			--a_size;
+
 		printf("%x", *buffer & 0xff);
-		while (--lk > 0)
+		while (--a_size > 0)
 			printf("%02x", *(--buffer) & 0xff);
 	}
 	printf("\n");
+}
+
+/**
+ * _close - close a file descriptor and print
+ * @ld: file descriptor
+ */
+void _close(int ld)
+{
+	if (close(ld) != -1)
+		return;
+	write(STDERR_FILENO, "Error: Can't close ld\n", 22);
+	exit(98);
+}
+
+/**
+ * _read - read
+ * @ld: descriptor to read
+ * @buf: buffer to write
+ * @c: bytes
+ */
+void _read(int ld, char *buf, size_t c)
+{
+	if (read(ld, buf, c) != -1)
+		return;
+	write(STDERR_FILENO, "Error: Can't read from file\n", 28);
+	_close(ld);
+	exit(98);
+}
+
+/**
+  * main - copy a file contents to another file
+  * @ac: arguments count
+  * @av: arguments value
+  *
+  * Return: 0 success
+  */
+int main(int ac, const char *av[])
+{
+	unsigned int l_mode;
+	int endian;
+	int ld;
+	unsigned char buffer[18];
+
+	if (ac != 2)
+	{
+		write(STDERR_FILENO, "Usage: elf_header elf_filename\n", 31);
+		exit(98);
+	}
+	ld = open(av[1], O_RDONLY);
+	if (ld == -1)
+	{
+		write(STDERR_FILENO, "Error: can't read from file\n", 28);
+		exit(98);
+	}
+	_read(ld, (char *) buffer, 18);
+	len_magic(buffer);
+	l_mode = len_class(buffer);
+	endian = len_data(buffer);
+	len_version(buffer);
+	len_osabi(buffer);
+	len_abivers(buffer);
+	len_type(buffer, ld);
+	lseek(ld, 24, SEEK_SET);
+	_read(ld, (char *) buffer, l_mode / 8);
+	len_entry(buffer, l_mode, endian);
+	_close(ld);
+
+	return (0);
 }
